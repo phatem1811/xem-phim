@@ -1,0 +1,22 @@
+name: Deploy Static Website
+
+on:
+  push:
+    branches:
+      - master    # Tự động deploy khi push code lên nhánh master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # B1. Checkout source code từ repository
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # B2. Deploy lên GitHub Pages
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./   # Deploy toàn bộ root folder
