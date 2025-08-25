@@ -1,22 +1,32 @@
-name: Deploy Static Website
+name: Deploy to GitHub Pages
 
 on:
   push:
     branches:
-      - master    # Tự động deploy khi push code lên nhánh master
+      - master  # Nhánh bạn muốn deploy
+
+permissions:
+  contents: write  # Cần cho action push lên gh-pages
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
     steps:
-      # B1. Checkout source code từ repository
-      - name: Checkout repository
-        uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      # B2. Deploy lên GitHub Pages
-      - name: Deploy to GitHub Pages
+      - name: Cài Node.js (nếu dùng Node để build)
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Cài dependencies và build
+        run: |
+          npm install
+          npm run build
+
+      - name: Deploy lên GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./   # Deploy toàn bộ root folder
+          publish_dir: ./dist   # Đổi thành thư mục build của bạn
